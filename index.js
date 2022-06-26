@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const { randomUUID } = require('crypto');
 
 const readFIle = require('./helpers/readFile.js');
+const loginMiddleware = require('./middlewares/loginMiddleware');
 
 const app = express();
 app.use(bodyParser.json());
@@ -42,9 +43,8 @@ app.get('/talker', async (_req, res) => {
   }
 });
 
-app.post('/login', async (req, res) => {
+app.post('/login', loginMiddleware, async (req, res) => {
   try {
-    // const { email, password } = req.body;
     const token = randomUUID().split('-').join('').substring(0, 16);
     res.status(200).json({ token });
   } catch (error) {
