@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const { randomUUID } = require('crypto');
 
 const readFIle = require('./helpers/readFile.js');
 
@@ -32,10 +33,20 @@ app.get('/talker/:id', async (req, res) => {
   }
 });
 
-app.get('/talker', async (req, res) => {
+app.get('/talker', async (_req, res) => {
   try {
     const talkersList = await readFIle();
     res.status(200).json(talkersList);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.post('/login', async (req, res) => {
+  try {
+    // const { email, password } = req.body;
+    const token = randomUUID().split('-').join('').substring(0, 16);
+    res.status(200).json({ token });
   } catch (error) {
     console.log(error);
   }
