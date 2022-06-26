@@ -14,15 +14,32 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send('Hello world');
 });
 
+app.get('/talker/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const talkersList = await readFIle();
+    const filterTalker = talkersList.filter((talker) => talker.id === Number(id));
+
+    if (filterTalker.length === 0) {
+      res.status(404)
+        .json({ message: 'Pessoa palestrante não encontrada' });
+    }
+
+    res.status(200).json(filterTalker[0]);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 app.get('/talker', async (req, res) => {
   try {
     const talkersList = await readFIle();
-    console.log(talkersList);
     res.status(200).json(talkersList);
   } catch (error) {
     console.log(error);
   }
-})
+});
 
 app.listen(PORT, () => {
   console.log('Online');
