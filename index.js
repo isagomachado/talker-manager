@@ -76,13 +76,37 @@ app.delete('/talker/:id', tokenMiddleware, async (req, res) => {
     const { id } = req.params;
     const talkersList = await readFIle();
     const talkerIndex = talkersList.findIndex((talker) => talker.id === Number(id));
-    
-    // if (talkerIndex === -1) return res.status()
 
     talkersList.splice(talkerIndex, 1);
+
     await writeFile(talkersList);
-    console.log(talkersList);
+
     res.status(204).end();
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.put('/talker/:id',
+  tokenMiddleware,
+  nameMiddleware,
+  ageMiddleware,
+  talkMiddleware,
+  watchedAtMiddleware,
+  rateMiddleware,
+  async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, age, talk } = req.body;
+    const talkersList = await readFIle();
+
+    const talkerIndex = talkersList.findIndex((talker) => talker.id === Number(id));
+
+    talkersList[talkerIndex] = { ...talkersList[talkerIndex], name, age, talk };
+
+    await writeFile(talkersList);
+
+    res.status(200).json(talkersList[talkerIndex]);
   } catch (error) {
     console.log(error);
   }
