@@ -1,8 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { randomUUID } = require('crypto');
 
 const readFIle = require('./helpers/readFile.js');
+const generateToken = require('./helpers/generateToken');
 const loginMiddleware = require('./middlewares/loginMiddleware');
 
 const app = express();
@@ -45,7 +45,8 @@ app.get('/talker', async (_req, res) => {
 
 app.post('/login', loginMiddleware, async (req, res) => {
   try {
-    const token = randomUUID().split('-').join('').substring(0, 16);
+    const token = generateToken(16);
+    console.log(token.length);
     res.status(200).json({ token });
   } catch (error) {
     console.log(error);
