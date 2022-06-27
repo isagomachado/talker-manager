@@ -71,6 +71,23 @@ app.post('/talker',
   }
 });
 
+app.delete('/talker/:id', tokenMiddleware, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const talkersList = await readFIle();
+    const talkerIndex = talkersList.findIndex((talker) => talker.id === Number(id));
+    
+    // if (talkerIndex === -1) return res.status()
+
+    talkersList.splice(talkerIndex, 1);
+    await writeFile(talkersList);
+    console.log(talkersList);
+    res.status(204).end();
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 app.post('/login', loginMiddleware, async (_req, res) => {
   try {
     const token = generateToken(16);
