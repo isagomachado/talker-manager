@@ -2,8 +2,15 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const readFIle = require('./helpers/readFile.js');
+const writeFile = require('./helpers/writeFile');
 const generateToken = require('./helpers/generateToken');
 const loginMiddleware = require('./middlewares/loginMiddleware');
+const tokenMiddleware = require('./middlewares/tokenMiddleware');
+const nameMiddleware = require('./middlewares/nameMiddleware');
+const ageMiddleware = require('./middlewares/ageMiddleware');
+const talkMiddleware = require('./middlewares/talkMiddleware');
+const watchedAtMiddleware = require('./middlewares/watchedAtMiddleware');
+const rateMiddleware = require('./middlewares/rateMiddleware');
 
 const app = express();
 app.use(bodyParser.json());
@@ -43,10 +50,30 @@ app.get('/talker', async (_req, res) => {
   }
 });
 
-app.post('/login', loginMiddleware, async (req, res) => {
+app.post('/talker',
+  tokenMiddleware,
+  nameMiddleware,
+  ageMiddleware,
+  talkMiddleware,
+  watchedAtMiddleware,
+  rateMiddleware,
+  async (req, res) => {
+  try {
+    const { name, age, talk } = req.body;
+    const talkersList = await readFIle();
+    const newTalker = { id: talkersList.length + 1, name, age, talk };
+    talkersList.push(newTalker);
+    writeFile(talkersList);
+    console.log(talkersList);
+    res.status(201).json(newTalker);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.post('/login', loginMiddleware, async (_req, res) => {
   try {
     const token = generateToken(16);
-    console.log(token.length);
     res.status(200).json({ token });
   } catch (error) {
     console.log(error);
