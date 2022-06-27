@@ -1,3 +1,5 @@
+// validação do formato dadata, referencia: https://www.guj.com.br/t/resolvido-como-validar-data-com-java-script/276656
+
 const watchedAtMiddleware = (req, res, next) => {
   const { talk } = req.body;
   const validDate = /^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/;

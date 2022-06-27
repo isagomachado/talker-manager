@@ -63,7 +63,7 @@ app.post('/talker',
     const talkersList = await readFIle();
     const newTalker = { id: talkersList.length + 1, name, age, talk };
     talkersList.push(newTalker);
-    writeFile(talkersList);
+    await writeFile(talkersList);
     console.log(talkersList);
     res.status(201).json(newTalker);
   } catch (error) {
